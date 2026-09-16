@@ -81,6 +81,12 @@ const XIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
   </svg>
 );
 
+const MenuIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+  </svg>
+);
+
 // ==========================================
 // DATASETS
 // ==========================================
@@ -134,6 +140,23 @@ const CITIES_DATA: Record<string, { temp: number; condition: string; humidity: n
       { day: 'Fri', date: '19 Sep', max: 28, min: 20, cond: 'Sunny' },
       { day: 'Sat', date: '20 Sep', max: 27, min: 19, cond: 'Clear' },
       { day: 'Sun', date: '21 Sep', max: 28, min: 20, cond: 'Sunny' },
+    ]
+  },
+  Virar: {
+    temp: 28,
+    condition: 'Partly Cloudy',
+    humidity: 74,
+    wind: 14,
+    aqi: 58,
+    uv: 6,
+    forecast: [
+      { day: 'Mon', date: '15 Sep', max: 28, min: 23, cond: 'Partly Cloudy' },
+      { day: 'Tue', date: '16 Sep', max: 29, min: 23, cond: 'Sunny' },
+      { day: 'Wed', date: '17 Sep', max: 28, min: 22, cond: 'Light Rain' },
+      { day: 'Thu', date: '18 Sep', max: 27, min: 22, cond: 'Cloudy' },
+      { day: 'Fri', date: '19 Sep', max: 29, min: 23, cond: 'Sunny' },
+      { day: 'Sat', date: '20 Sep', max: 28, min: 23, cond: 'Showers' },
+      { day: 'Sun', date: '21 Sep', max: 29, min: 24, cond: 'Partly Cloudy' },
     ]
   },
   Nagpur: {
@@ -250,6 +273,7 @@ export default function ClimateLensApp() {
   const [selectedCity, setSelectedCity] = useState('Pune');
   const [searchQuery, setSearchQuery] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   // Modal / Interactive state
@@ -283,121 +307,219 @@ export default function ClimateLensApp() {
   );
 
   return (
-    <div className={`min-h-screen font-sans transition-colors duration-200 ${
+    <div className={`min-h-screen w-full max-w-full overflow-x-hidden font-sans transition-colors duration-200 ${
       isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'
     }`}>
       
       {/* ========================================== */}
-      {/* 1. HEADER / NAVBAR (FULL WIDTH FLUID)     */}
+      {/* 1. HEADER / NAVBAR                         */}
       {/* ========================================== */}
-      <header className={`sticky top-0 z-50 w-full border-b backdrop-blur-md transition-colors ${
-        isDarkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/95 border-slate-200'
-      }`}>
-        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-3 flex items-center justify-between gap-6">
-          
-          {/* Brand Logo */}
-          <div 
-            onClick={() => { setActiveTab('Home'); setSearchQuery(''); }}
-            className="flex items-center gap-3 shrink-0 cursor-pointer group"
-          >
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-600/30 group-hover:scale-105 transition-transform">
-              <LeafIcon className="w-5 h-5" />
-            </div>
-            <div>
-              <span className={`text-xl font-black tracking-tight leading-none block ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                Climate<span className="text-emerald-500">Lens</span>
-              </span>
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mt-0.5">
-                Data for a Greener Tomorrow
-              </span>
-            </div>
-          </div>
+      <header
+        className={`sticky top-0 z-50 w-full border-b backdrop-blur-xl transition-colors ${
+          isDarkMode
+            ? 'bg-slate-950/95 border-slate-800'
+            : 'bg-white/95 border-slate-200'
+        }`}
+      >
+        <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
+          <div className="min-h-[68px] flex items-center justify-between gap-3">
 
-          {/* Navigation Links (Fully functional) */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600">
-            {['Home', 'Weather', 'Climate Data', 'Explore Map', 'Learn', 'Take Action', 'About'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`relative py-1.5 px-1 transition-colors ${
-                  activeTab === tab
-                    ? 'text-emerald-600 font-bold'
-                    : isDarkMode ? 'text-slate-300 hover:text-emerald-400' : 'text-slate-600 hover:text-emerald-600'
+            {/* Brand */}
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('Home');
+                setSearchQuery('');
+                setMobileMenuOpen(false);
+              }}
+              className="flex items-center gap-2.5 min-w-0 shrink-0 text-left group"
+              aria-label="ClimateLens Home"
+            >
+              <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-600/20 group-hover:scale-105 transition-transform shrink-0 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/30 to-transparent" />
+                <LeafIcon className="relative w-5 h-5 sm:w-6 sm:h-6" />
+              </div>
+
+              <div className="min-w-0">
+                <span
+                  className={`text-[19px] sm:text-xl font-black tracking-tight leading-none block truncate ${
+                    isDarkMode ? 'text-white' : 'text-slate-900'
+                  }`}
+                >
+                  Climate<span className="text-emerald-500">Lens</span>
+                </span>
+                <span className="hidden sm:block text-[9px] font-bold text-slate-400 uppercase tracking-[0.12em] mt-1 truncate">
+                  Data for a Greener Tomorrow
+                </span>
+              </div>
+            </button>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden xl:flex items-center gap-5 2xl:gap-7 text-sm font-semibold shrink-0">
+              {['Home', 'Weather', 'Climate Data', 'Explore Map', 'Learn', 'Take Action', 'About'].map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  className={`relative py-2 px-0.5 whitespace-nowrap transition-colors ${
+                    activeTab === tab
+                      ? 'text-emerald-600 font-bold'
+                      : isDarkMode
+                        ? 'text-slate-300 hover:text-emerald-400'
+                        : 'text-slate-600 hover:text-emerald-600'
+                  }`}
+                >
+                  {tab}
+                  {activeTab === tab && (
+                    <span className="absolute -bottom-1 left-0 right-0 mx-auto w-full h-0.5 bg-emerald-600 rounded-full" />
+                  )}
+                </button>
+              ))}
+            </nav>
+
+            {/* Desktop Controls */}
+            <div className="hidden md:flex items-center justify-end gap-2 lg:gap-3 min-w-0 flex-1 xl:flex-none">
+              <div className="relative hidden lg:flex items-center w-[220px] 2xl:w-[280px] shrink">
+                <input
+                  type="text"
+                  placeholder={
+                    activeTab === 'Learn'
+                      ? 'Search articles & guides...'
+                      : activeTab === 'Explore Map'
+                        ? 'Search districts...'
+                        : 'Search city, district or topic...'
+                  }
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`w-full text-xs py-2.5 pl-4 pr-10 rounded-full border outline-none transition-all ${
+                    isDarkMode
+                      ? 'bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-emerald-500'
+                      : 'bg-slate-100 border-slate-200 text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'
+                  }`}
+                />
+                <SearchIcon className="absolute right-3.5 text-slate-400 w-4 h-4 pointer-events-none" />
+              </div>
+
+              <div
+                className={`flex items-center p-1 rounded-full border shrink-0 ${
+                  isDarkMode
+                    ? 'bg-slate-800 border-slate-700'
+                    : 'bg-slate-100 border-slate-200'
                 }`}
               >
-                {tab}
-                {activeTab === tab && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-600 rounded-full" />
+                <button
+                  type="button"
+                  onClick={() => setIsDarkMode(false)}
+                  className={`p-1.5 rounded-full transition ${
+                    !isDarkMode ? 'bg-white text-amber-500 shadow-sm' : 'text-slate-400'
+                  }`}
+                  title="Light Mode"
+                >
+                  <SunIcon className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsDarkMode(true)}
+                  className={`p-1.5 rounded-full transition ${
+                    isDarkMode ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-400'
+                  }`}
+                  title="Dark Mode"
+                >
+                  <MoonIcon className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('Take Action')}
+                className="px-4 lg:px-5 py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs tracking-wide shadow-md shadow-emerald-700/20 transition active:scale-95 shrink-0"
+              >
+                Take Action
+              </button>
+            </div>
+
+            {/* Mobile Controls */}
+            <div className="md:hidden flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className={`w-9 h-9 rounded-full border flex items-center justify-center ${
+                  isDarkMode
+                    ? 'bg-slate-800 border-slate-700 text-emerald-400'
+                    : 'bg-slate-100 border-slate-200 text-slate-600'
+                }`}
+                aria-label="Toggle theme"
+              >
+                {isDarkMode ? (
+                  <MoonIcon className="w-4 h-4" />
+                ) : (
+                  <SunIcon className="w-4 h-4 text-amber-500" />
                 )}
               </button>
-            ))}
-          </nav>
 
-          {/* Right Header Controls (Wide Search & Theme Toggle) */}
-          <div className="flex items-center gap-4 flex-1 max-w-xl justify-end">
-            
-            {/* Contextual Search Input */}
-            <div className="relative flex-1 max-w-md hidden md:flex items-center">
-              <input
-                type="text"
-                placeholder={
-                  activeTab === 'Learn' ? "Search articles & guides..." :
-                  activeTab === 'Explore Map' ? "Search districts..." :
-                  "Search city, district or topic..."
-                }
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full text-xs py-2.5 pl-4 pr-10 rounded-full border outline-none transition-all ${
-                  isDarkMode 
-                    ? 'bg-slate-800 border-slate-700 text-white focus:border-emerald-500' 
-                    : 'bg-slate-100 hover:bg-slate-200/60 focus:bg-white border-slate-200 text-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className={`w-9 h-9 rounded-xl flex items-center justify-center border ${
+                  isDarkMode
+                    ? 'bg-slate-800 border-slate-700 text-white'
+                    : 'bg-white border-slate-200 text-slate-700'
                 }`}
-              />
-              <SearchIcon className="absolute right-3.5 text-slate-400 w-4 h-4 pointer-events-none" />
-            </div>
-
-            {/* Dark/Light Theme Toggle */}
-            <div className={`flex items-center p-1 rounded-full border ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-100 border-slate-200'}`}>
-              <button
-                onClick={() => setIsDarkMode(false)}
-                className={`p-1.5 rounded-full transition ${!isDarkMode ? 'bg-white text-amber-500 shadow-sm' : 'text-slate-400'}`}
-                title="Light Mode"
+                aria-label="Open navigation"
+                aria-expanded={mobileMenuOpen}
               >
-                <SunIcon className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => setIsDarkMode(true)}
-                className={`p-1.5 rounded-full transition ${isDarkMode ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-400'}`}
-                title="Dark Mode"
-              >
-                <MoonIcon className="w-3.5 h-3.5" />
+                {mobileMenuOpen ? (
+                  <XIcon className="w-5 h-5" />
+                ) : (
+                  <MenuIcon className="w-5 h-5" />
+                )}
               </button>
             </div>
-
-            {/* CTA Button */}
-            <button 
-              onClick={() => setActiveTab('Take Action')}
-              className="px-5 py-2.5 rounded-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs tracking-wide shadow-md shadow-emerald-900/20 transition active:scale-95 shrink-0"
-            >
-              Take Action
-            </button>
           </div>
 
-        </div>
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className={`md:hidden pb-4 pt-1 border-t ${
+              isDarkMode ? 'border-slate-800' : 'border-slate-100'
+            }`}>
+              <div className="relative mb-3">
+                <input
+                  type="text"
+                  placeholder="Search city, district or topic..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`w-full text-xs py-3 pl-4 pr-10 rounded-xl border outline-none ${
+                    isDarkMode
+                      ? 'bg-slate-900 border-slate-700 text-white'
+                      : 'bg-slate-50 border-slate-200 text-slate-800'
+                  }`}
+                />
+                <SearchIcon className="absolute right-3.5 top-3 text-slate-400 w-4 h-4" />
+              </div>
 
-        {/* Mobile Navbar Row */}
-        <div className="lg:hidden flex items-center justify-around border-t py-2 px-2 overflow-x-auto text-xs font-semibold scrollbar-none border-slate-200 dark:border-slate-800">
-          {['Home', 'Weather', 'Climate Data', 'Explore Map', 'Learn', 'Take Action', 'About'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-3 py-1 rounded-full shrink-0 ${
-                activeTab === tab ? 'bg-emerald-600 text-white' : 'text-slate-500'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+              <div className="grid grid-cols-2 gap-2">
+                {['Home', 'Weather', 'Climate Data', 'Explore Map', 'Learn', 'Take Action', 'About'].map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() => {
+                      setActiveTab(tab);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`px-3 py-3 rounded-xl text-left text-xs font-bold transition ${
+                      activeTab === tab
+                        ? 'bg-emerald-600 text-white'
+                        : isDarkMode
+                          ? 'bg-slate-900 text-slate-300 border border-slate-800'
+                          : 'bg-slate-50 text-slate-600 border border-slate-100'
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -410,7 +532,7 @@ export default function ClimateLensApp() {
         <>
           {/* HERO SECTION */}
           
-          <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-900 text-white py-14 lg:py-20 px-4 sm:px-8 lg:px-12">
+          <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-900 text-white py-10 sm:py-14 lg:py-20 px-4 sm:px-8 lg:px-12 overflow-x-hidden">
             <div 
              className="absolute inset-0 bg-cover bg-center pointer-events-none"
               style={{
@@ -419,13 +541,13 @@ export default function ClimateLensApp() {
             />
             
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/95 via-emerald-950/60 to-emerald-950/20 pointer-events-none" />
-            <div className="w-full max-w-[1600px] mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-7 space-y-6">
+            <div className="w-full max-w-[1600px] mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center min-w-0">
+              <div className="lg:col-span-7 space-y-5 sm:space-y-6 min-w-0">
                 <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[11px] font-extrabold uppercase tracking-widest">
                   A CLEANER MAHARASHTRA. A BRIGHTER TOMORROW.
                 </span>
 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
+                <h1 className="text-[2.15rem] leading-[1.05] sm:text-5xl lg:text-6xl font-black tracking-tight break-words max-w-full">
                   See the Change. <br />
                   Understand the Impact. <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-green-400">
@@ -437,16 +559,16 @@ export default function ClimateLensApp() {
                   Explore real-world weather, climate trends and environmental insights to create a healthier, more sustainable Maharashtra.
                 </p>
 
-                <div className="flex flex-wrap items-center gap-4 pt-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 w-full">
                   <button 
                     onClick={() => setActiveTab('Weather')}
-                    className="px-6 py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-600/40 transition"
+                    className="w-full sm:w-auto justify-center px-5 sm:px-6 py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-600/40 transition"
                   >
                     Explore Weather <ArrowRightIcon className="w-3.5 h-3.5" />
                   </button>
                   <button 
                     onClick={() => setActiveTab('Climate Data')}
-                    className="px-6 py-3.5 rounded-full bg-white/95 hover:bg-white text-slate-900 font-bold text-xs uppercase tracking-wider transition shadow-md"
+                    className="w-full sm:w-auto justify-center px-5 sm:px-6 py-3.5 rounded-full bg-white/95 hover:bg-white text-slate-900 font-bold text-xs uppercase tracking-wider transition shadow-md"
                   >
                     View Climate Data
                   </button>
@@ -454,8 +576,8 @@ export default function ClimateLensApp() {
               </div>
 
               {/* Hero Interactive Weather Widget */}
-              <div className="lg:col-span-5 relative">
-                <div className="bg-white/90 backdrop-blur-2xl text-slate-800 rounded-[28px] p-6 sm:p-7 shadow-2xl border border-white/60 space-y-6">
+              <div className="lg:col-span-5 relative min-w-0 w-full">
+                <div className="w-full min-w-0 bg-white/90 backdrop-blur-2xl text-slate-800 rounded-[24px] sm:rounded-[28px] p-5 sm:p-7 shadow-2xl border border-white/60 space-y-5 sm:space-y-6">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2.5">
                       <div className="p-2.5 rounded-full bg-emerald-100 text-emerald-700">
@@ -476,7 +598,7 @@ export default function ClimateLensApp() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-5">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-5 min-w-0">
                     <div className="flex items-center gap-3">
                       <CloudSunIcon className="w-16 h-16" />
                       <div>
@@ -538,11 +660,11 @@ export default function ClimateLensApp() {
           </section>
 
           {/* DASHBOARD CONTENT */}
-          <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-10 space-y-10">
+          <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-10 space-y-8 sm:space-y-10 min-w-0">
             
             {/* 7-DAY FORECAST SECTION */}
             <section className={`rounded-2xl p-6 border shadow-sm space-y-5 ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                   <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>7-Day Weather Forecast ({selectedCity})</h2>
                   <p className="text-xs text-slate-400">Plan ahead with accurate weather predictions</p>
@@ -687,7 +809,7 @@ export default function ClimateLensApp() {
 
       {/* VIEW 2: WEATHER TAB */}
       {activeTab === 'Weather' && (
-        <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-10 space-y-8">
+        <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-10 space-y-8 min-w-0">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6 border-slate-200 dark:border-slate-800">
             <div>
               <h1 className="text-3xl font-black">Detailed Weather Dashboard</h1>
@@ -778,7 +900,7 @@ export default function ClimateLensApp() {
 
       {/* VIEW 3: CLIMATE DATA TAB */}
       {activeTab === 'Climate Data' && (
-        <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-10 space-y-8">
+        <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-10 space-y-8 min-w-0">
           <div>
             <h1 className="text-3xl font-black">Maharashtra Climate Data Explorer</h1>
             <p className="text-xs text-slate-400 mt-1">Historical temperature changes, rainfall deficits, and regional environmental risk scores.</p>
@@ -1172,7 +1294,15 @@ export default function ClimateLensApp() {
         {/* CTA */}
         <button
           onClick={() => {
-            setSelectedCity(selectedDistrictMap);
+            const supportedCity =
+              selectedDistrictMap === 'Mumbai' ? 'Mumbai' :
+              selectedDistrictMap === 'Nashik' ? 'Nashik' :
+              selectedDistrictMap === 'Nagpur' ? 'Nagpur' :
+              selectedDistrictMap === 'Aurangabad' ? 'Aurangabad' :
+              selectedDistrictMap === 'Solapur' ? 'Solapur' :
+              selectedDistrictMap === 'Virar' ? 'Virar' :
+              'Pune';
+            setSelectedCity(supportedCity);
             setActiveTab('Weather');
           }}
           className="w-full mt-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition-all shadow-lg shadow-emerald-600/20"
@@ -1189,7 +1319,7 @@ export default function ClimateLensApp() {
 )}
       {/* VIEW 5: LEARN TAB */}
       {activeTab === 'Learn' && (
-        <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-10 space-y-8">
+        <main className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-10 space-y-8 min-w-0">
           <div>
             <h1 className="text-3xl font-black">Climate Education Hub</h1>
             <p className="text-xs text-slate-400 mt-1">Read research-backed articles, guides, and practical climate knowledge.</p>
@@ -1206,7 +1336,7 @@ export default function ClimateLensApp() {
                 }`}
               >
                 <div className="h-48 overflow-hidden relative">
-                  <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                  <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300 bg-slate-200" />
                   <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-900/80 text-emerald-400 text-[10px] font-bold backdrop-blur-md">
                     {article.category}
                   </span>
@@ -1487,7 +1617,7 @@ export default function ClimateLensApp() {
             <h2 className="text-2xl font-black">{activeArticle.title}</h2>
             <p className="text-xs text-slate-400">{activeArticle.date} · By {activeArticle.author}</p>
 
-            <img src={activeArticle.image} alt={activeArticle.title} className="w-full h-56 object-cover rounded-2xl" />
+            <img src={activeArticle.image} alt={activeArticle.title} className="w-full h-56 object-cover rounded-2xl bg-slate-200" />
 
             <p className="text-sm leading-relaxed text-slate-300">{activeArticle.content}</p>
 
