@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import { useState } from 'react';
 // ==========================================
 // SVG ICONS (Self-contained)
 // ==========================================
@@ -258,29 +257,17 @@ export default function ClimateLensApp() {
   const [pledges, setPledges] = useState<number[]>([]);
   const [showVolunteerModal, setShowVolunteerModal] = useState(false);
   const [volunteerSubmitted, setVolunteerSubmitted] = useState(false);
-  
-  // Carbon Footprint Calculator State
-  const [commuteKm, setCommuteKm] = useState(15);
-  const [electricityUnits, setElectricityUnits] = useState(120);
-  const [dietType, setDietType] = useState('vegetarian');
 
-  // Interactive Map Layer State
+  
   const [mapLayer, setMapLayer] = useState<'Temperature' | 'Rainfall' | 'AQI'>('Temperature');
   const [selectedDistrictMap, setSelectedDistrictMap] = useState('Pune');
 
-  // Contact Form State
+
   const [contactSubmitted, setContactSubmitted] = useState(false);
 
   const cityData = CITIES_DATA[selectedCity] || CITIES_DATA['Pune'];
 
-  // Carbon footprint calculation (Rough estimate in Tons CO2/yr)
-  const calculateCO2 = () => {
-    const commuteCO2 = (commuteKm * 365 * 0.12) / 1000;
-    const elecCO2 = (electricityUnits * 12 * 0.82) / 1000;
-    const dietCO2 = dietType === 'meat' ? 2.1 : dietType === 'pescatarian' ? 1.5 : 1.1;
-    return (commuteCO2 + elecCO2 + dietCO2).toFixed(2);
-  };
-
+  
   const togglePledge = (id: number) => {
     if (pledges.includes(id)) {
       setPledges(pledges.filter(p => p !== id));
