@@ -358,7 +358,7 @@ export default function ClimateLensApp() {
             </button>
 
             {/* Desktop navigation */}
-            <nav className="hidden xl:flex items-center justify-center gap-1 text-[13px] font-semibold flex-1">
+            <nav className="hidden lg:flex items-center justify-center gap-1 text-[13px] font-semibold flex-1">
               {['Home', 'Weather', 'Climate Data', 'Explore Map', 'Learn', 'Take Action', 'About'].map((tab) => (
                 <button
                   type="button"
@@ -384,7 +384,7 @@ export default function ClimateLensApp() {
 
             {/* Desktop / tablet controls */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <div className="relative hidden md:flex w-[220px] lg:w-[260px] xl:w-[230px] items-center">
+              <div className="relative hidden md:flex w-[180px] lg:w-[210px] items-center">
                 <input
                   type="text"
                   placeholder={
@@ -437,7 +437,7 @@ export default function ClimateLensApp() {
               <button
                 type="button"
                 onClick={() => setActiveTab('Take Action')}
-                className="hidden xl:inline-flex items-center justify-center px-4 py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs tracking-wide shadow-md shadow-emerald-900/15 transition active:scale-95"
+                className="hidden lg:inline-flex items-center justify-center px-2.5 py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs tracking-wide shadow-md shadow-emerald-900/15 transition active:scale-95"
               >
                 Take Action
               </button>
@@ -446,7 +446,7 @@ export default function ClimateLensApp() {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(prev => !prev)}
-                className={`xl:hidden w-10 h-10 rounded-xl border flex items-center justify-center transition ${
+                className={`lg:hidden w-10 h-10 rounded-xl border flex items-center justify-center transition ${
                   isDarkMode
                     ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
                     : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
@@ -462,7 +462,7 @@ export default function ClimateLensApp() {
 
         {/* Mobile / tablet navigation drawer */}
         {mobileMenuOpen && (
-          <div className={`xl:hidden border-t ${
+          <div className={`lg:hidden border-t ${
             isDarkMode ? 'border-slate-800 bg-slate-950' : 'border-slate-200 bg-white'
           }`}>
             <div className="px-4 sm:px-6 py-4 space-y-3">
@@ -510,7 +510,7 @@ export default function ClimateLensApp() {
                 ))}
               </nav>
 
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 gap-3 pt-1">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
                 <div className={`sm:hidden flex items-center p-1 rounded-full border ${
                   isDarkMode ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-200'
                 }`}>
